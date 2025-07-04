@@ -4295,9 +4295,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectPrefab: {fileID: 3200869142416962908, guid: 9bde0c2517d0aa243b4ed60efad9f33f,
     type: 3}
-  poolSize: 3
-  spawnPoint: {fileID: 1902325935}
-  spawnDelay: 0.5
+  poolSize: 5
+  spawnPoints:
+  - {fileID: 1902325935}
+  spawnDelay: 0.3
+  offsetStep: {x: 0, y: 0.15, z: -0.24}
 --- !u!4 &1074121861
 Transform:
   m_ObjectHideFlags: 0
@@ -6279,7 +6281,7 @@ Transform:
   m_GameObject: {fileID: 1902325934}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.023, z: 4.9}
+  m_LocalPosition: {x: -0.01, y: 2.023, z: 4.9}
   m_LocalScale: {x: 0.35771, y: 0.35771, z: 0.35771}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7440,8 +7442,8 @@ Transform:
   m_GameObject: {fileID: 3048322853457482227}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.9999595, z: -0, w: 0.00899448}
-  m_LocalPosition: {x: -0.02, y: -0.13, z: 4.1394763}
-  m_LocalScale: {x: 0.1870381, y: 0.1870381, z: 0.1870381}
+  m_LocalPosition: {x: -0.02, y: -0.16, z: 4.1394763}
+  m_LocalScale: {x: 0.19145219, y: 0.19145219, z: 0.19145219}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1668897805548338039}

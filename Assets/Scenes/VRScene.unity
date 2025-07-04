@@ -3628,7 +3628,7 @@ GameObject:
   - component: {fileID: 1444908576}
   - component: {fileID: 1444908575}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: LoseScore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4389,7 +4389,7 @@ GameObject:
   - component: {fileID: 1836773251}
   - component: {fileID: 1836773250}
   m_Layer: 5
-  m_Name: Button
+  m_Name: GainScore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

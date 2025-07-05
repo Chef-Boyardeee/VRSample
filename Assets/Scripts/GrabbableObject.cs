@@ -15,6 +15,9 @@ public class GrabbableObject : XRGrabInteractable
         base.Awake();
         rb = GetComponent<Rigidbody>();
         pool = FindObjectOfType<GrabbableObjectPool>();
+
+        throwVelocityScale = 2.0f;          
+        throwAngularVelocityScale = 1.5f;    
     }
 
     protected override void OnSelectExited(SelectExitEventArgs args)
@@ -92,7 +95,6 @@ public class GrabbableObject : XRGrabInteractable
         {
             isInsideZone = false;
 
-            // Only start timer if not being held
             if (!isSelected && respawnCoroutine == null)
             {
                 respawnCoroutine = StartCoroutine(RespawnAfterDelay(3f));

@@ -8,6 +8,8 @@ public class GrabbableObject : XRGrabInteractable
     private GrabbableObjectPool pool;
     private Coroutine respawnCoroutine;
 
+    private bool isInsideZone = true;
+
     protected override void Awake()
     {
         base.Awake();
@@ -19,16 +21,16 @@ public class GrabbableObject : XRGrabInteractable
     {
         base.OnSelectExited(args);
 
-        // Start respawn countdown if not already pending
-        if (respawnCoroutine == null)
-            respawnCoroutine = StartCoroutine(RespawnAfterDelay(2f));
+        if (!isInsideZone && respawnCoroutine == null)
+        {
+            respawnCoroutine = StartCoroutine(RespawnAfterDelay(1f));
+        }
     }
 
     protected override void OnSelectEntered(SelectEnterEventArgs args)
     {
         base.OnSelectEntered(args);
 
-        // Cancel respawn if it's pending
         if (respawnCoroutine != null)
         {
             StopCoroutine(respawnCoroutine);
@@ -40,15 +42,11 @@ public class GrabbableObject : XRGrabInteractable
     {
         yield return new WaitForSeconds(delay);
 
-        // Reset physics
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         rb.isKinematic = true;
 
-        // Respawn the object via the pool
-        if (pool != null)
-            pool.RespawnObject(gameObject);
-
+        pool?.RespawnObject(gameObject);
         respawnCoroutine = null;
     }
 
@@ -71,7 +69,34 @@ public class GrabbableObject : XRGrabInteractable
         rb.angularVelocity = Vector3.zero;
         rb.isKinematic = true;
 
-        if (pool != null)
-            pool.RespawnObject(gameObject);
+        pool?.RespawnObject(gameObject);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("ValidZone"))
+        {
+            isInsideZone = true;
+
+            if (respawnCoroutine != null)
+            {
+                StopCoroutine(respawnCoroutine);
+                respawnCoroutine = null;
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("ValidZone"))
+        {
+            isInsideZone = false;
+
+            // Only start timer if not being held
+            if (!isSelected && respawnCoroutine == null)
+            {
+                respawnCoroutine = StartCoroutine(RespawnAfterDelay(1f));
+            }
+        }
     }
 }

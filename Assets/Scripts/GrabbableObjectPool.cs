@@ -11,7 +11,7 @@ public class GrabbableObjectPool : MonoBehaviour
     public Vector3 offsetStep = new Vector3(0, 0.15f, -0.2f); // Stagger position to avoid stacking
 
     private Queue<GameObject> pool = new Queue<GameObject>();
-    private int[] spawnPointCounters; // Tracks how many objects have been spawned per point
+    private int[] spawnPointCounters;
 
     void Start()
     {
@@ -70,7 +70,7 @@ public class GrabbableObjectPool : MonoBehaviour
 
     public void RespawnObject(GameObject obj)
     {
-        StartCoroutine(RespawnAfterDelay(obj, 2f));
+        StartCoroutine(RespawnAfterDelay(obj, 1f));
     }
 
     private IEnumerator RespawnAfterDelay(GameObject obj, float delay)
@@ -84,13 +84,11 @@ public class GrabbableObjectPool : MonoBehaviour
         obj.transform.SetPositionAndRotation(spawnPoint.position + offset, spawnPoint.rotation);
         spawnPointCounters[spawnIndex]++;
 
+        obj.SetActive(true);
+
         Rigidbody rb = obj.GetComponent<Rigidbody>();
+        rb.isKinematic = false;
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
-        obj.SetActive(true);
-        rb.isKinematic = true;
-
-        yield return new WaitForSeconds(0.1f);
-        rb.isKinematic = false;
     }
 }

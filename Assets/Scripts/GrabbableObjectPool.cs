@@ -6,33 +6,21 @@ public class GrabbableObjectPool : MonoBehaviour
 {
     public GameObject objectPrefab;
     public int poolSize = 10;
-    public Transform[] spawnPoints; // Support multiple spawn points
+    public Transform[] spawnPoints;
     public float spawnDelay = 0.5f;
-    public Vector3 offsetStep = new Vector3(0, 0.15f, -0.2f); // Stagger position to avoid stacking
+    public Vector3 offsetStep = new Vector3(0, 0.15f, -0.2f);
 
     private Queue<GameObject> pool = new Queue<GameObject>();
+    private List<GameObject> allObjects = new List<GameObject>();
     private int[] spawnPointCounters;
 
-    private void ResetObjectPositions()
+    private void Start()
     {
-        // Reset all basketball positions regardless of their state
-    }
-
-    void Start()
-    {
-        // Add ResetObjectPositions to onTimerStartDelegate
-        UIManager.onTimerStartDelegate += ResetObjectPositions;
+        UIManager.onTimerStartDelegate += OnPlayStart;
 
         spawnPointCounters = new int[spawnPoints.Length];
 
-        for (int i = 0; i < poolSize; i++)
-        {
-            GameObject obj = Instantiate(objectPrefab);
-            obj.SetActive(false);
-            pool.Enqueue(obj);
-        }
-
-        StartCoroutine(SpawnInitialObjects());
+        // Do NOT spawn anything at start
     }
 
     private IEnumerator SpawnInitialObjects()
@@ -46,8 +34,6 @@ public class GrabbableObjectPool : MonoBehaviour
                 GameObject obj = pool.Dequeue();
 
                 Transform spawnPoint = spawnPoints[spawnIndex];
-
-                // Offset to avoid stacking
                 Vector3 offset = offsetStep * spawnPointCounters[spawnIndex];
                 obj.transform.SetPositionAndRotation(spawnPoint.position + offset, spawnPoint.rotation);
                 spawnPointCounters[spawnIndex]++;
@@ -55,14 +41,13 @@ public class GrabbableObjectPool : MonoBehaviour
                 obj.SetActive(true);
 
                 Rigidbody rb = obj.GetComponent<Rigidbody>();
+                rb.isKinematic = true;
                 rb.velocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
-                rb.isKinematic = true;
 
                 yield return new WaitForSeconds(0.1f);
                 rb.isKinematic = false;
 
-                // Alternate spawn points
                 spawnIndex = (spawnIndex + 1) % spawnPoints.Length;
             }
 
@@ -87,10 +72,10 @@ public class GrabbableObjectPool : MonoBehaviour
 
         int spawnIndex = Random.Range(0, spawnPoints.Length);
         Transform spawnPoint = spawnPoints[spawnIndex];
-
         Vector3 offset = offsetStep * spawnPointCounters[spawnIndex];
-        obj.transform.SetPositionAndRotation(spawnPoint.position + offset, spawnPoint.rotation);
         spawnPointCounters[spawnIndex]++;
+
+        obj.transform.SetPositionAndRotation(spawnPoint.position + offset, spawnPoint.rotation);
 
         obj.SetActive(true);
 
@@ -100,4 +85,33 @@ public class GrabbableObjectPool : MonoBehaviour
         rb.angularVelocity = Vector3.zero;
     }
 
+    private void OnPlayStart()
+    {
+        // Destroy all existing basketballs (if any)
+        foreach (GameObject obj in allObjects)
+        {
+            if (obj != null)
+                Destroy(obj);
+        }
+
+        allObjects.Clear();
+        pool.Clear();
+        spawnPointCounters = new int[spawnPoints.Length];
+
+        // Create new objects
+        for (int i = 0; i < poolSize; i++)
+        {
+            GameObject obj = Instantiate(objectPrefab);
+            obj.SetActive(false);
+            pool.Enqueue(obj);
+            allObjects.Add(obj);
+        }
+
+        StartCoroutine(SpawnInitialObjects());
+    }
+
+    private void OnDestroy()
+    {
+        UIManager.onTimerStartDelegate -= OnPlayStart;
+    }
 }

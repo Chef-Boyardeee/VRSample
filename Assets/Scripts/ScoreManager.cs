@@ -31,7 +31,7 @@ public class ScoreManager : MonoBehaviour
 
     private void UpdateScore()
     {
-        textScore.text = $"Score: {score}";
+        textScore.text = score.ToString();
     }
 
     private void EnableScoring()

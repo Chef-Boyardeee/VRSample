@@ -5,7 +5,8 @@ using TMPro;
 
 public class Timer : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI textTimer;
+    [SerializeField] private TextMeshProUGUI textTimerSeconds;
+    [SerializeField] private TextMeshProUGUI textTimerMinutes;
     private static int maxTime;
     [SerializeField] private int MaxTime;
     private static int currentTime;
@@ -50,6 +51,7 @@ public class Timer : MonoBehaviour
 
     private void UpdateTimerText()
     {
-        textTimer.text = currentTime.ToString();
+        textTimerMinutes.text = $"{(currentTime / 60):D2}";
+        textTimerSeconds.text = $"{(currentTime % 60):D2}";
     }
 }

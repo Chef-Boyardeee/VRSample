@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour
 {
@@ -8,7 +9,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject panelMenu;
     [SerializeField] private GameObject panelReplayMenu;
     [SerializeField] private GameObject panelScoreTracker;
-    [SerializeField] private GameObject panelScoreMenu;
     [SerializeField] private Timer timer;
 
     public delegate void OnTimerStart();
@@ -35,7 +35,6 @@ public class UIManager : MonoBehaviour
     {
         panelTimer.gameObject.SetActive(false);
         panelReplayMenu.gameObject.SetActive(false);
-        panelScoreMenu.gameObject.SetActive(false);
         panelScoreTracker.gameObject.SetActive(false);
         panelMenu.gameObject.SetActive(true);
     }
@@ -44,7 +43,6 @@ public class UIManager : MonoBehaviour
     {
         panelTimer.gameObject.SetActive(true);
         panelReplayMenu.gameObject.SetActive(false);
-        panelScoreMenu.gameObject.SetActive(true);
         panelScoreTracker.gameObject.SetActive(true);
         panelMenu.gameObject.SetActive(false);
     }
@@ -53,7 +51,6 @@ public class UIManager : MonoBehaviour
     {
         panelTimer.gameObject.SetActive(false);
         panelReplayMenu.gameObject.SetActive(true);
-        panelScoreMenu.gameObject.SetActive(false);
         panelScoreTracker.gameObject.SetActive(true);
         panelMenu.gameObject.SetActive(false);
     }
@@ -75,4 +72,5 @@ public class UIManager : MonoBehaviour
     { 
         Application.Quit();
     }
+
 }

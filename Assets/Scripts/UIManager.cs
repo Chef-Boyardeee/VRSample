@@ -14,6 +14,9 @@ public class UIManager : MonoBehaviour
     public delegate void OnTimerStart();
     public static OnTimerStart onTimerStartDelegate;
 
+    public static OnTimerStart onTimerStartDelegateLate;
+
+
     public delegate void OnTimerEnd();
     public static OnTimerStart onTimerEndDelegate;
 

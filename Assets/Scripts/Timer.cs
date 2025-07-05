@@ -13,7 +13,6 @@ public class Timer : MonoBehaviour
 
     public void StartTimer()
     {
-        Debug.Log("Timer started.");
         maxTime = MaxTime;
         currentTime = maxTime;
         UpdateTimerText();
@@ -21,12 +20,16 @@ public class Timer : MonoBehaviour
         {
             UIManager.onTimerStartDelegate();
         }
+        if (UIManager.onTimerStartDelegateLate != null)
+        {
+            UIManager.onTimerStartDelegateLate();
+        }
+
         StartCoroutine("Countdown");
     }
 
     private void EndTimer()
     {
-        Debug.Log("Timer ended.");
         if (UIManager.onTimerEndDelegate != null)
         {
             UIManager.onTimerEndDelegate();
@@ -35,7 +38,6 @@ public class Timer : MonoBehaviour
 
     private IEnumerator Countdown()
     {
-        Debug.Log("Timer counting down.");
         while(currentTime > 0)
         {
             yield return new WaitForSeconds(1);

@@ -35,6 +35,7 @@ public class ScoreManager : MonoBehaviour
     private void UpdateScore()
     {
         textScore.text = score.ToString();
+        animator.SetInteger("animatorScore", score);
     }
 
     private void EnableScoring()
@@ -53,6 +54,20 @@ public class ScoreManager : MonoBehaviour
         UpdateScore();
     }
 
+    private void ResetHoop()
+    {
+        animator.SetBool("timerEnd", true);
+    }
+
+    private void StartHoop()
+    {
+        if(score != 0)
+        {
+            ResetScore();
+        }
+        animator.SetBool("timerEnd", false);
+    }
+
     private void Start()
     {
         gainedScore = GainedScore;
@@ -60,12 +75,10 @@ public class ScoreManager : MonoBehaviour
 
         DisableScoring();
 
-        onScoreDelegate += SlowHoop;
-        onScoreDelegate += FastHoop;
-
-        UIManager.onTimerStartDelegate += EnableScoring;
         UIManager.onTimerStartDelegate += ResetScore;
-        UIManager.onTimerStartDelegate += StartHoop;
+        UIManager.onTimerStartDelegate += EnableScoring;
+
+        UIManager.onTimerStartDelegateLate += StartHoop;
 
         UIManager.onTimerEndDelegate += DisableScoring;
         UIManager.onTimerEndDelegate += ResetHoop;
@@ -78,7 +91,14 @@ public class ScoreManager : MonoBehaviour
         {
             score += gainedScore;
             UpdateScore();
-            onScoreDelegate();
+            if(onScoreDelegate!=null)
+            {
+                onScoreDelegate();
+            }
+            else
+            {
+                Debug.Log("Nothing in onScoreDelegate.");
+            }
         }
     }
 
@@ -89,33 +109,5 @@ public class ScoreManager : MonoBehaviour
             score -= lostScore;
             UpdateScore();
         }
-    }
-
-    private void SlowHoop()
-    {
-        if(score >= 20)
-        {
-            animator.SetBool("scoredTwenty", true);
-        }
-    }
-
-    private void FastHoop()
-    {
-        if (score >= 50)
-        {
-            animator.SetBool("scoredFifty", true);
-        }
-    }
-
-    private void ResetHoop()
-    {
-        animator.SetBool("timerEnd", true);
-        animator.SetBool("scoredFifty", false);
-        animator.SetBool("scoredTwenty", false);
-    }
-
-    private void StartHoop()
-    {
-        animator.SetBool("timerEnd", false);
     }
 }

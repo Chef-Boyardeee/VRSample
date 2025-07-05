@@ -13,8 +13,16 @@ public class GrabbableObjectPool : MonoBehaviour
     private Queue<GameObject> pool = new Queue<GameObject>();
     private int[] spawnPointCounters;
 
+    private void ResetObjectPositions()
+    {
+        // Reset all basketball positions regardless of their state
+    }
+
     void Start()
     {
+        // Add ResetObjectPositions to onTimerStartDelegate
+        UIManager.onTimerStartDelegate += ResetObjectPositions;
+
         spawnPointCounters = new int[spawnPoints.Length];
 
         for (int i = 0; i < poolSize; i++)
@@ -91,4 +99,5 @@ public class GrabbableObjectPool : MonoBehaviour
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
     }
+
 }

@@ -76,9 +76,9 @@ public class ScoreManager : MonoBehaviour
     {
         if(canScore)
         {
-            onScoreDelegate();
             score += gainedScore;
             UpdateScore();
+            onScoreDelegate();
         }
     }
 

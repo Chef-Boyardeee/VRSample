@@ -6,7 +6,6 @@ public class GrabbableObject : XRGrabInteractable
 {
     private Rigidbody rb;
     private GrabbableObjectPool pool;
-
     private Coroutine respawnCoroutine;
 
     protected override void Awake()
@@ -16,16 +15,15 @@ public class GrabbableObject : XRGrabInteractable
         pool = FindObjectOfType<GrabbableObjectPool>();
     }
 
-    // When player drops/releases the object
     protected override void OnSelectExited(SelectExitEventArgs args)
     {
         base.OnSelectExited(args);
 
-        // Start respawn countdown
-        respawnCoroutine = StartCoroutine(ReturnToPoolAfterDelay(2f));
+        // Start respawn countdown if not already pending
+        if (respawnCoroutine == null)
+            respawnCoroutine = StartCoroutine(RespawnAfterDelay(2f));
     }
 
-    // When player picks up the object again
     protected override void OnSelectEntered(SelectEnterEventArgs args)
     {
         base.OnSelectEntered(args);
@@ -38,18 +36,20 @@ public class GrabbableObject : XRGrabInteractable
         }
     }
 
-    private IEnumerator ReturnToPoolAfterDelay(float delay)
+    private IEnumerator RespawnAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
 
+        // Reset physics
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         rb.isKinematic = true;
 
-        yield return new WaitForSeconds(0.1f);
-
+        // Respawn the object via the pool
         if (pool != null)
-            pool.ReturnToPool(gameObject);
+            pool.RespawnObject(gameObject);
+
+        respawnCoroutine = null;
     }
 
     public void OnScored()
@@ -72,6 +72,6 @@ public class GrabbableObject : XRGrabInteractable
         rb.isKinematic = true;
 
         if (pool != null)
-            pool.ReturnToPool(gameObject);
+            pool.RespawnObject(gameObject);
     }
 }

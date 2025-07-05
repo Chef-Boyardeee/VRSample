@@ -23,7 +23,7 @@ public class GrabbableObject : XRGrabInteractable
 
         if (!isInsideZone && respawnCoroutine == null)
         {
-            respawnCoroutine = StartCoroutine(RespawnAfterDelay(1f));
+            respawnCoroutine = StartCoroutine(RespawnAfterDelay(3f));
         }
     }
 
@@ -95,7 +95,7 @@ public class GrabbableObject : XRGrabInteractable
             // Only start timer if not being held
             if (!isSelected && respawnCoroutine == null)
             {
-                respawnCoroutine = StartCoroutine(RespawnAfterDelay(1f));
+                respawnCoroutine = StartCoroutine(RespawnAfterDelay(3f));
             }
         }
     }

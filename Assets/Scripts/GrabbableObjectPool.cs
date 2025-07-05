@@ -70,7 +70,7 @@ public class GrabbableObjectPool : MonoBehaviour
 
     public void RespawnObject(GameObject obj)
     {
-        StartCoroutine(RespawnAfterDelay(obj, 1f));
+        StartCoroutine(RespawnAfterDelay(obj, 3f));
     }
 
     private IEnumerator RespawnAfterDelay(GameObject obj, float delay)

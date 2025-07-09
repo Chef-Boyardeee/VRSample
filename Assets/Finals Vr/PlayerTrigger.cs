@@ -11,7 +11,7 @@ public class PlayerTrigger : MonoBehaviour
         }
         else
         {
-            Debug.Log($"Triggered with: {other.name}");
+            Debug.Log("Monster triggered with: " + other.name);
         }
     }
 }

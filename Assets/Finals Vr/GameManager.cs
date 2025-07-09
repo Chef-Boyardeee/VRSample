@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        Debug.Log("Game Over! Restarting...");
+        Debug.Log("GAME OVER! Restarting scene...");
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

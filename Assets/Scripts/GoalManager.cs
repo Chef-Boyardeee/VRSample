@@ -18,11 +18,13 @@ public class GoalManager : MonoBehaviour
         {
             foreach(GoalItemInteractable goalItemInteractable in goalItemInteractables)
             {
-                goalPillar.onAcceptItem += goalItemInteractable.OnAcceptItem;
                 if (goalItemInteractable.GetItem() == goalPillar.GetItem())
                 {
                     goalPillar.onAcceptItem += goalItemInteractable.OnAcceptItem;
-                    break;
+                }
+                else
+                {
+                    goalPillar.onRejectItem += goalItemInteractable.OnRejectItem;
                 }
             }
         }

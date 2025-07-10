@@ -12,6 +12,11 @@ public class GoalItemInteractable : XRGrabInteractable
         ChangeMaterial();
     }
 
+    public void OnRejectItem()
+    {
+        Debug.Log("Wrong item.");
+    }
+
     private void ChangeMaterial()
     {
         this.gameObject.GetComponent<MeshRenderer>().material = item.testMaterial;

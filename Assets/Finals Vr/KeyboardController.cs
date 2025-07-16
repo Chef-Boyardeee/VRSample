@@ -13,6 +13,10 @@ public class PlayerKeyboardController : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         cameraTransform = Camera.main != null ? Camera.main.transform : transform;
+
+        // Lock and hide cursor
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void Update()

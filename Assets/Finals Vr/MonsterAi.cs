@@ -14,6 +14,8 @@ public class MonsterAI : MonoBehaviour
     private AIState state = AIState.Roaming;
     private float timeSinceLastSeen;
     private Transform currentRoamTarget;
+    private bool isTeleporting = false;
+    private AIState lastLoggedState;
 
     private enum AIState { Roaming, Chasing, Searching, Teleporting }
 
@@ -21,6 +23,8 @@ public class MonsterAI : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         ChooseNewRoamPoint();
+        lastLoggedState = state;
+        Debug.Log($"[MonsterAI] Initial State: {state}");
     }
 
     void Update()
@@ -34,7 +38,11 @@ public class MonsterAI : MonoBehaviour
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
         bool canSeePlayer = distanceToPlayer < sightRange && HasLineOfSight();
 
-        Debug.Log($"[MonsterAI] State: {state}, CanSeePlayer: {canSeePlayer}, Distance: {distanceToPlayer}");
+        if (state != lastLoggedState)
+        {
+            Debug.Log($"[MonsterAI] State changed: {lastLoggedState} ? {state}");
+            lastLoggedState = state;
+        }
 
         switch (state)
         {
@@ -48,7 +56,10 @@ public class MonsterAI : MonoBehaviour
                 HandleSearching(canSeePlayer);
                 break;
             case AIState.Teleporting:
-                StartCoroutine(TeleportNearPlayer());
+                if (!isTeleporting)
+                {
+                    StartCoroutine(TeleportNearPlayer());
+                }
                 break;
         }
     }
@@ -68,7 +79,6 @@ public class MonsterAI : MonoBehaviour
     {
         if (canSeePlayer)
         {
-            Debug.Log("Switching to Chasing");
             state = AIState.Chasing;
             return;
         }
@@ -85,7 +95,6 @@ public class MonsterAI : MonoBehaviour
 
         if (!canSeePlayer)
         {
-            Debug.Log("Lost sight of player. Searching...");
             timeSinceLastSeen = 0f;
             state = AIState.Searching;
         }
@@ -97,21 +106,23 @@ public class MonsterAI : MonoBehaviour
 
         if (canSeePlayer)
         {
-            Debug.Log("Player found again. Chasing!");
             state = AIState.Chasing;
             return;
         }
 
         if (timeSinceLastSeen > loseSightTime)
         {
-            Debug.Log("Can't find player. Teleporting...");
             state = AIState.Teleporting;
         }
     }
 
     IEnumerator TeleportNearPlayer()
     {
-        yield return new WaitForSeconds(0.5f); // Optional delay
+        isTeleporting = true;
+
+        yield return new WaitForSeconds(0.1f);
+
+        agent.enabled = false;
 
         Vector3 offset = Random.onUnitSphere * teleportDistance;
         offset.y = 0;
@@ -120,12 +131,20 @@ public class MonsterAI : MonoBehaviour
         NavMeshHit hit;
         if (NavMesh.SamplePosition(targetPos, out hit, 5f, NavMesh.AllAreas))
         {
-            agent.Warp(hit.position);
-            Debug.Log("Teleported near player");
+            transform.position = hit.position;
+            Debug.Log("[MonsterAI] Teleported near player.");
         }
+        else
+        {
+            Debug.LogWarning("[MonsterAI] Failed to find valid teleport position.");
+        }
+
+        agent.enabled = true;
 
         state = AIState.Roaming;
         ChooseNewRoamPoint();
+
+        isTeleporting = false;
     }
 
     void ChooseNewRoamPoint()

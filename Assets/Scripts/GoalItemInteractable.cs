@@ -18,7 +18,7 @@ public class GoalItemInteractable : XRGrabInteractable
         ChangeMaterial();
     }
 
-    public void OnExit()
+    public void OnRemoveItem()
     {
         ResetMaterial();
     }

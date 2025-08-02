@@ -7,6 +7,8 @@ public class GoalManager : MonoBehaviour
     [SerializeField] private GoalItemInteractable[] goalItemInteractables;
     [SerializeField] private GoalPillar[] goalPillars;
     [SerializeField] private MonsterAI monster;
+    public static int maxScore;
+    public static int currentScore;
 
     private void Awake()
     {
@@ -17,25 +19,26 @@ public class GoalManager : MonoBehaviour
     {
         foreach(GoalPillar goalPillar in goalPillars)
         {
-            foreach(GoalItemInteractable goalItemInteractable in goalItemInteractables)
+            maxScore++;
+            goalPillar.onAcceptItem += () =>
             {
-                if (goalItemInteractable.GetItem() == goalPillar.GetItem())
+                Debug.Log("BASED ITEM!");
+                goalPillar.SetIsUsed(true);
+                monster.OnAcceptItem();
+                currentScore++;
+                if(currentScore >= maxScore)
                 {
-                    goalPillar.onAcceptItem += monster.OnAcceptItem;
-                    goalPillar.onAcceptItem += () =>
-                    {
-                        Debug.Log("BASED ITEM!");
-                        goalPillar.SetIsUsed(true);
-                    };
+                    //What happens when player places all goal items onto the pillars
                 }
-                else
-                {
-                    goalPillar.onRejectItem += () =>
-                    {
-                        Debug.Log("CRINGE ITEM!");
-                    };
-                }
-            }
+            };
+            goalPillar.onRejectItem += () =>
+            {
+                Debug.Log("CRINGE ITEM!");
+            };
+            goalPillar.onRemoveItem += () =>
+            {
+                currentScore--;
+            };
         }
         yield return null;
     }

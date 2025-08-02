@@ -16,6 +16,9 @@ public class GoalPillar : XRSocketInteractor
     public delegate void OnRejectItem();
     public OnRejectItem onRejectItem;
 
+    public delegate void OnRemoveItem();
+    public OnRemoveItem onRemoveItem;
+
     protected override void Awake()
     {
         base.Awake();
@@ -26,7 +29,7 @@ public class GoalPillar : XRSocketInteractor
     {
         selectEntered.AddListener(AcceptItem);
         selectEntered.AddListener(RejectItem);
-        selectExited.AddListener(ResetItem);
+        selectExited.AddListener(RemoveItem);
         yield return null;
     }
 
@@ -54,12 +57,11 @@ public class GoalPillar : XRSocketInteractor
         }
     }
 
-    private void ResetItem(SelectExitEventArgs args)
+    private void RemoveItem(SelectExitEventArgs args)
     {
-        Debug.Log("Reset Item Call.");
+        Debug.Log("Remove Item Call.");
         GoalItemInteractable item = args.interactableObject.transform.gameObject.GetComponent<GoalItemInteractable>();
-        item.OnExit();
-
+        item.OnRemoveItem();
     }
 
     public GoalItem GetItem()

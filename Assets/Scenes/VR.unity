@@ -947,10 +947,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Origin (XR Rig) (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2495887649939040634, guid: 550b1c00dc06c6142b4e8ca54e9db066,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 3149736358513974071, guid: 550b1c00dc06c6142b4e8ca54e9db066,
         type: 3}
       propertyPath: m_MoveSpeed
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081694816885671996, guid: 550b1c00dc06c6142b4e8ca54e9db066,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.82
       objectReference: {fileID: 0}
     - target: {fileID: 8081694816885671996, guid: 550b1c00dc06c6142b4e8ca54e9db066,
         type: 3}
@@ -1280,6 +1290,12 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1051904530}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &988875541 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8081694816885671996, guid: 550b1c00dc06c6142b4e8ca54e9db066,
+    type: 3}
+  m_PrefabInstance: {fileID: 741689676}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &995629100
 GameObject:
   m_ObjectHideFlags: 0
@@ -2132,12 +2148,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1533376852 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0,
-    type: 3}
-  m_PrefabInstance: {fileID: 1913892128}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1601295883
 GameObject:
   m_ObjectHideFlags: 0
@@ -2328,7 +2338,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cec2098720a0f2f48ad5c8e011de9d92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1533376852}
+  player: {fileID: 988875541}
   sightRange: 30
   loseSightTime: 5
   teleportDistance: 50
@@ -2800,6 +2810,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Map_UPDATED
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 32b1c48efbbde6c4b90a9ac3e0bdc478,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3594243245622329198, guid: 32b1c48efbbde6c4b90a9ac3e0bdc478,
         type: 3}

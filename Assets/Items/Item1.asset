@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item1
   m_EditorClassIdentifier: 
   itemMaterial: {fileID: 2100000, guid: c95377c75f1894a46ba33ce399969d2e, type: 2}
-  testMaterial: {fileID: 2100000, guid: 753bcaa1d2ec21646b0175e67cadf71e, type: 2}
+  testMaterial: {fileID: 2100000, guid: 5efad5289bbc10149a041f50508788ee, type: 2}

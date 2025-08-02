@@ -6,6 +6,7 @@ public class GoalManager : MonoBehaviour
 {
     [SerializeField] private GoalItemInteractable[] goalItemInteractables;
     [SerializeField] private GoalPillar[] goalPillars;
+    [SerializeField] private MonsterAI monster;
 
     private void Awake()
     {
@@ -20,11 +21,19 @@ public class GoalManager : MonoBehaviour
             {
                 if (goalItemInteractable.GetItem() == goalPillar.GetItem())
                 {
-                    goalPillar.onAcceptItem += goalItemInteractable.OnAcceptItem;
+                    goalPillar.onAcceptItem += monster.OnAcceptItem;
+                    goalPillar.onAcceptItem += () =>
+                    {
+                        Debug.Log("BASED ITEM!");
+                        goalPillar.SetIsUsed(true);
+                    };
                 }
                 else
                 {
-                    goalPillar.onRejectItem += goalItemInteractable.OnRejectItem;
+                    goalPillar.onRejectItem += () =>
+                    {
+                        Debug.Log("CRINGE ITEM!");
+                    };
                 }
             }
         }

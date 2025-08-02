@@ -6,20 +6,31 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class GoalItemInteractable : XRGrabInteractable
 {
     [SerializeField] private GoalItem item;
+    private MeshRenderer myRend;
 
     public void OnAcceptItem()
     {
-        ChangeMaterial();
+        Debug.Log("Right item.");
     }
 
     public void OnRejectItem()
     {
-        Debug.Log("Wrong item.");
+        ChangeMaterial();
+    }
+
+    public void OnExit()
+    {
+        ResetMaterial();
     }
 
     private void ChangeMaterial()
     {
-        this.gameObject.GetComponent<MeshRenderer>().material = item.testMaterial;
+        gameObject.GetComponent<MeshRenderer>().material = item.testMaterial;
+    }
+
+    private void ResetMaterial()
+    {
+        gameObject.GetComponent<MeshRenderer>().material = item.itemMaterial;
     }
 
     public GoalItem GetItem()

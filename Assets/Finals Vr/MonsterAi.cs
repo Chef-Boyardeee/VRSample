@@ -153,4 +153,9 @@ public class MonsterAI : MonoBehaviour
         currentRoamTarget = roamPoints[Random.Range(0, roamPoints.Length)];
         agent.SetDestination(currentRoamTarget.position);
     }
+
+    public void OnAcceptItem()
+    {
+        Debug.Log("GG");
+    }
 }

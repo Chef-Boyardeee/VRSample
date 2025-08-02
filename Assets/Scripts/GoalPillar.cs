@@ -8,6 +8,8 @@ public class GoalPillar : XRSocketInteractor
     [SerializeField] private GoalItem requiredItem;
     [SerializeField] private GameObject snapVolume;
 
+    private bool isUsed;
+
     public delegate void OnAcceptItem();
     public OnAcceptItem onAcceptItem;
 
@@ -24,27 +26,49 @@ public class GoalPillar : XRSocketInteractor
     {
         selectEntered.AddListener(AcceptItem);
         selectEntered.AddListener(RejectItem);
+        selectExited.AddListener(ResetItem);
         yield return null;
     }
 
     private void AcceptItem(SelectEnterEventArgs args)
     {
-        if(onAcceptItem != null && args.interactableObject.transform.gameObject.GetComponent<GoalItemInteractable>().GetItem() == requiredItem)
+        GoalItemInteractable item = args.interactableObject.transform.gameObject.GetComponent<GoalItemInteractable>();
+        Debug.Log("Accept Item Call.");
+        if (onAcceptItem != null && item.GetItem() == requiredItem && !isUsed)
         {
+            Debug.Log("Accept Item If Check.");
+            item.OnAcceptItem();
             onAcceptItem();
         }
     }
 
     private void RejectItem(SelectEnterEventArgs args)
     {
-        if(onRejectItem != null && args.interactableObject.transform.gameObject.GetComponent<GoalItemInteractable>().GetItem() != requiredItem)
+        GoalItemInteractable item = args.interactableObject.transform.gameObject.GetComponent<GoalItemInteractable>();
+        Debug.Log("Reject Item Call.");
+        if(onRejectItem != null && item.GetItem() != requiredItem)
         {
+            Debug.Log("Reject Item If Check.");
+            item.OnRejectItem();
             onRejectItem();
         }
+    }
+
+    private void ResetItem(SelectExitEventArgs args)
+    {
+        Debug.Log("Reset Item Call.");
+        GoalItemInteractable item = args.interactableObject.transform.gameObject.GetComponent<GoalItemInteractable>();
+        item.OnExit();
+
     }
 
     public GoalItem GetItem()
     {
         return requiredItem;
+    }
+
+    public void SetIsUsed(bool b)
+    {
+        isUsed = b;
     }
 }

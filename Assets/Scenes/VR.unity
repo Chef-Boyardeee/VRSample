@@ -8692,7 +8692,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0c797d899bdc343880e4bcc62f18b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 20
+  moveSpeed: 10
   rotationSpeed: 100
   allowMouseRotation: 1
 --- !u!143 &988875545
@@ -14508,6 +14508,8 @@ MonoBehaviour:
   sightRange: 30
   loseSightTime: 5
   teleportDistance: 50
+  speedBoostAmount: 5
+  maxSpeed: 10
   roamPoints:
   - {fileID: 255421220}
   - {fileID: 1082345659}

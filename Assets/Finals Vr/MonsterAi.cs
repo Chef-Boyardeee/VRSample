@@ -8,6 +8,8 @@ public class MonsterAI : MonoBehaviour
     public float sightRange = 15f;
     public float loseSightTime = 5f;
     public float teleportDistance = 10f;
+    public float speedBoostAmount = 2f;
+    public float maxSpeed = 10f;
     public Transform[] roamPoints;
 
     private NavMeshAgent agent;
@@ -157,5 +159,6 @@ public class MonsterAI : MonoBehaviour
     public void OnAcceptItem()
     {
         Debug.Log("GG");
+        agent.speed = Mathf.Min(agent.speed + speedBoostAmount, maxSpeed);
     }
 }

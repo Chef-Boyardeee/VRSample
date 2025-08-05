@@ -11,12 +11,21 @@ public class GoalManager : MonoBehaviour
     public static int maxScore;
     public static int currentScore;
 
+    public delegate void OnVictory();
+    public static OnVictory onVictory;
+
     private void Awake()
     {
-        StartCoroutine("AwakeCoroutine");
+        GameManager.onStartGame += InitializeGoalItems;
+        GameManager.onStartGame += InitializeGoalPillars;
+        //Add enemy reset to onStartGame
+
+        GameManager.onRestartGame += InitializeGoalItems;
+        GameManager.onRestartGame += InitializeGoalPillars;
+        //Add enemy reset to onRestartGame
     }
 
-    private IEnumerator AwakeCoroutine()
+    private void InitializeGoalItems()
     {
         //Check if there are enough goal item spawns
         if(goalItemInteractables.Length > goalItemSpawns.Length)
@@ -47,7 +56,11 @@ public class GoalManager : MonoBehaviour
                 }
             }
         }
+    }
 
+    public void InitializeGoalPillars()
+    {
+        currentScore = 0;
         //Initialize goal pillars
         foreach (GoalPillar goalPillar in goalPillars)
         {
@@ -58,10 +71,11 @@ public class GoalManager : MonoBehaviour
                 goalPillar.SetIsUsed(true);
                 monster.OnAcceptItem();
                 currentScore++;
-                if(currentScore >= maxScore)
+                if (currentScore >= maxScore)
                 {
                     //What happens when player places all goal items onto the pillars
                     Debug.Log("Congratulations, you have escaped!");
+                    onVictory?.Invoke();
                 }
             };
             goalPillar.onRejectItem += () =>
@@ -73,6 +87,5 @@ public class GoalManager : MonoBehaviour
                 currentScore--;
             };
         }
-        yield return null;
     }
 }

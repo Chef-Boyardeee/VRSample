@@ -17,6 +17,7 @@ public class MonsterAI : MonoBehaviour
     private float timeSinceLastSeen;
     private Transform currentRoamTarget;
     private bool isTeleporting = false;
+    private bool wasSeeingPlayerLastFrame = false;
     private AIState lastLoggedState;
 
     private enum AIState { Roaming, Chasing, Searching, Teleporting }
@@ -40,12 +41,25 @@ public class MonsterAI : MonoBehaviour
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
         bool canSeePlayer = distanceToPlayer < sightRange && HasLineOfSight();
 
+        // Logging sight change
+        if (canSeePlayer && !wasSeeingPlayerLastFrame)
+        {
+            Debug.Log("I see you");
+        }
+        else if (!canSeePlayer && wasSeeingPlayerLastFrame)
+        {
+            Debug.Log("I don't see you");
+        }
+        wasSeeingPlayerLastFrame = canSeePlayer;
+
+        // State change logging
         if (state != lastLoggedState)
         {
             Debug.Log($"[MonsterAI] State changed: {lastLoggedState} ? {state}");
             lastLoggedState = state;
         }
 
+        // State behavior
         switch (state)
         {
             case AIState.Roaming:
@@ -68,12 +82,15 @@ public class MonsterAI : MonoBehaviour
 
     bool HasLineOfSight()
     {
-        RaycastHit hit;
-        Vector3 direction = (player.position - transform.position).normalized;
-        if (Physics.Raycast(transform.position + Vector3.up, direction, out hit, sightRange))
+        Vector3 origin = transform.position + Vector3.up;
+        Vector3 direction = (player.position - origin).normalized;
+        float distance = Vector3.Distance(origin, player.position);
+
+        if (Physics.Raycast(origin, direction, out RaycastHit hit, distance))
         {
             return hit.transform == player;
         }
+
         return false;
     }
 
@@ -93,24 +110,27 @@ public class MonsterAI : MonoBehaviour
 
     void HandleChasing(bool canSeePlayer)
     {
-        agent.SetDestination(player.position);
-
-        if (!canSeePlayer)
+        if (canSeePlayer)
+        {
+            agent.SetDestination(player.position);
+        }
+        else
         {
             timeSinceLastSeen = 0f;
             state = AIState.Searching;
+            agent.ResetPath(); // stop moving
         }
     }
 
     void HandleSearching(bool canSeePlayer)
     {
-        timeSinceLastSeen += Time.deltaTime;
-
         if (canSeePlayer)
         {
             state = AIState.Chasing;
             return;
         }
+
+        timeSinceLastSeen += Time.deltaTime;
 
         if (timeSinceLastSeen > loseSightTime)
         {
@@ -130,8 +150,7 @@ public class MonsterAI : MonoBehaviour
         offset.y = 0;
         Vector3 targetPos = player.position + offset;
 
-        NavMeshHit hit;
-        if (NavMesh.SamplePosition(targetPos, out hit, 5f, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(targetPos, out NavMeshHit hit, 5f, NavMesh.AllAreas))
         {
             transform.position = hit.position;
             Debug.Log("[MonsterAI] Teleported near player.");

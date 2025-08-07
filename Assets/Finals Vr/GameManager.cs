@@ -1,8 +1,12 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private Transform playerSpawn;
+    public static Transform playerSpawnStatic;
+
     public static GameManager Instance;
 
     public delegate void OnStartGame();
@@ -14,9 +18,16 @@ public class GameManager : MonoBehaviour
     public delegate void OnQuitGame();
     public static OnQuitGame onQuitGame;
 
-    void Awake()
+    private void Awake()
+    {
+        StartCoroutine("AwakeCoroutine");
+    }
+
+    private IEnumerator AwakeCoroutine()
     {
         Instance = this;
+        playerSpawnStatic = playerSpawn;
+        yield return null;
     }
 
     public void GameOver()

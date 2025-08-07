@@ -4,15 +4,24 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public static Player Instance;
+
+    private void Awake()
     {
-        
+        StartCoroutine("AwakeCoroutine");
     }
 
-    // Update is called once per frame
-    void Update()
+    private IEnumerator AwakeCoroutine()
     {
-        
+        Instance = this;
+        GameManager.onStartGame += () =>
+        {
+            gameObject.transform.position = GameManager.playerSpawnStatic.position;
+        };
+        GameManager.onRestartGame += () =>
+        {
+            gameObject.transform.position = GameManager.playerSpawnStatic.position;
+        };
+        yield return null;
     }
 }

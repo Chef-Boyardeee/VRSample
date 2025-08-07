@@ -43,6 +43,12 @@ public class GoalManager : MonoBehaviour
             bool goodSpawn = false;
             int i;
             goalItem.gameObject.SetActive(true);
+            if(goalItem.GetItem().isFirstItem)
+            {
+                goalItem.transform.position = goalItemSpawns[0].position;
+                usedGoalItemSpawns[0] = goalItemSpawns[0];
+                goodSpawn = true;
+            }
             while (!goodSpawn)
             {
                 i = Random.Range(0, goalItemSpawns.Length);

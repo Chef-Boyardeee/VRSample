@@ -5,6 +5,5 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Goal Item", menuName = "Scriptable Objects/Goal Item")]
 public class GoalItem : ScriptableObject
 {
-    public Material itemMaterial;
-    public Material testMaterial;
+    public bool isFirstItem;
 }

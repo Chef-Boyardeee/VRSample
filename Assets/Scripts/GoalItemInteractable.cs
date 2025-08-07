@@ -25,12 +25,12 @@ public class GoalItemInteractable : XRGrabInteractable
 
     private void ChangeMaterial()
     {
-        gameObject.GetComponent<MeshRenderer>().material = item.testMaterial;
+
     }
 
     private void ResetMaterial()
     {
-        gameObject.GetComponent<MeshRenderer>().material = item.itemMaterial;
+
     }
 
     public GoalItem GetItem()

@@ -158,7 +158,8 @@ public class MonsterAI : MonoBehaviour
 
     public void OnAcceptItem()
     {
-        Debug.Log("GG");
+        agent.gameObject.SetActive(true);
         agent.speed = Mathf.Min(agent.speed + speedBoostAmount, maxSpeed);
+        Debug.Log("GG");
     }
 }

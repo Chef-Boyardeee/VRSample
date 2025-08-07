@@ -8,6 +8,7 @@ public class GoalManager : MonoBehaviour
     [SerializeField] private GoalPillar[] goalPillars;
     [SerializeField] private Transform[] goalItemSpawns;
     [SerializeField] private MonsterAI monster;
+
     public static int maxScore;
     public static int currentScore;
 
@@ -28,30 +29,31 @@ public class GoalManager : MonoBehaviour
     private void InitializeGoalItems()
     {
         //Check if there are enough goal item spawns
-        if(goalItemInteractables.Length > goalItemSpawns.Length)
+        if(goalItemInteractables.Length > goalItemSpawns.Length || goalPillars.Length > goalItemInteractables.Length)
         {
-            Debug.LogError("Not enough spawn locations.");
+            Debug.LogError("Goal-related error.");
         }
 
         //Reset used goal item spawns
-        Transform[] usedSpawns = new Transform[goalItemSpawns.Length];
+        Transform[] usedGoalItemSpawns = new Transform[goalItemSpawns.Length];
 
         //Initialize goal item spawns
         foreach(GoalItemInteractable goalItem in goalItemInteractables)
         {
             bool goodSpawn = false;
-            int i = 0;
+            int i;
+            goalItem.gameObject.SetActive(true);
             while (!goodSpawn)
             {
                 i = Random.Range(0, goalItemSpawns.Length);
-                if(usedSpawns[i] == goalItemSpawns[i])
+                if(usedGoalItemSpawns[i] == goalItemSpawns[i])
                 {
                     goodSpawn = false;
                 }
                 else
                 {
                     goalItem.transform.position = goalItemSpawns[i].position;
-                    usedSpawns[i] = goalItemSpawns[i];
+                    usedGoalItemSpawns[i] = goalItemSpawns[i];
                     goodSpawn = true;
                 }
             }
@@ -61,6 +63,8 @@ public class GoalManager : MonoBehaviour
     public void InitializeGoalPillars()
     {
         currentScore = 0;
+        maxScore = 0;
+
         //Initialize goal pillars
         foreach (GoalPillar goalPillar in goalPillars)
         {

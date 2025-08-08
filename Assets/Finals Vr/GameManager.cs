@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,6 +11,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject player;
     public static GameObject playerStatic;
+
+    [SerializeField] private TeleportationProvider provider;
 
     [SerializeField] private Material night;
     [SerializeField] private Material day;
@@ -40,12 +44,27 @@ public class GameManager : MonoBehaviour
 
         onStartGame += () =>
         {
+            TeleportRequest request = new TeleportRequest()
+            {
+                destinationPosition = playerSpawn.position,
+                destinationRotation = playerSpawn.rotation,
+                matchOrientation = MatchOrientation.WorldSpaceUp
+            };
+            provider.QueueTeleportRequest(request);
             player.transform.position = playerSpawn.position;
             RenderSettings.skybox = night;
         };
 
         onRestartGame += () =>
         {
+            TeleportRequest request = new TeleportRequest()
+            {
+                destinationPosition = playerSpawn.position,
+                destinationRotation = playerSpawn.rotation,
+                matchOrientation = MatchOrientation.WorldSpaceUp
+            };
+            provider.QueueTeleportRequest(request);
+
             player.transform.position = playerSpawn.position;
             RenderSettings.skybox = night;
         };
@@ -57,6 +76,14 @@ public class GameManager : MonoBehaviour
 
         GoalManager.onVictory += () =>
         {
+            TeleportRequest request = new TeleportRequest()
+            {
+                destinationPosition = playerSpawn.position,
+                destinationRotation = playerSpawn.rotation,
+                matchOrientation = MatchOrientation.WorldSpaceUp
+            };
+            provider.QueueTeleportRequest(request);
+
             player.transform.position = playerSpawn.position;
             RenderSettings.skybox = day;
         };

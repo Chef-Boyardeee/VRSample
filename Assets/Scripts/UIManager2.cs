@@ -10,6 +10,11 @@ public class UIManager2 : MonoBehaviour
 
     private void Awake()
     {
+
+    }
+
+    private void Start()
+    {
         GameManager.onStartGame += () =>
         {
             mainMenuScreen.SetActive(false);

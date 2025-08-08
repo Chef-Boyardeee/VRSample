@@ -4,6 +4,9 @@ using System.Collections;
 
 public class MonsterAI : MonoBehaviour
 {
+    // ===== Delegate for death event =====
+    public static System.Action OnDeath;
+
     public Transform player;
     public float sightRange = 15f;
     public float loseSightTime = 5f;
@@ -19,19 +22,22 @@ public class MonsterAI : MonoBehaviour
     private bool isTeleporting = false;
     private bool wasSeeingPlayerLastFrame = false;
     private AIState lastLoggedState;
+    private bool isActive = false; // Controls if monster can act
 
     private enum AIState { Roaming, Chasing, Searching, Teleporting }
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        ChooseNewRoamPoint();
+        gameObject.SetActive(false); // Start hidden until first item given
         lastLoggedState = state;
         Debug.Log($"[MonsterAI] Initial State: {state}");
     }
 
     void Update()
     {
+        if (!isActive) return; // Don't run AI if not active
+
         if (player == null)
         {
             Debug.LogWarning("MonsterAI: Player not assigned!");
@@ -90,7 +96,6 @@ public class MonsterAI : MonoBehaviour
         {
             return hit.transform == player;
         }
-
         return false;
     }
 
@@ -118,7 +123,7 @@ public class MonsterAI : MonoBehaviour
         {
             timeSinceLastSeen = 0f;
             state = AIState.Searching;
-            agent.ResetPath(); // stop moving
+            agent.ResetPath();
         }
     }
 
@@ -141,7 +146,6 @@ public class MonsterAI : MonoBehaviour
     IEnumerator TeleportNearPlayer()
     {
         isTeleporting = true;
-
         yield return new WaitForSeconds(0.1f);
 
         agent.enabled = false;
@@ -161,10 +165,8 @@ public class MonsterAI : MonoBehaviour
         }
 
         agent.enabled = true;
-
         state = AIState.Roaming;
         ChooseNewRoamPoint();
-
         isTeleporting = false;
     }
 
@@ -177,8 +179,26 @@ public class MonsterAI : MonoBehaviour
 
     public void OnAcceptItem()
     {
+        if (!isActive)
+        {
+            // First time activation
+            gameObject.SetActive(true);
+            isActive = true;
+            Debug.Log("[MonsterAI] Activated after first item.");
+        }
+
         agent.gameObject.SetActive(true);
         agent.speed = Mathf.Min(agent.speed + speedBoostAmount, maxSpeed);
         Debug.Log("GG");
+    }
+
+    // Detect player contact
+    private void OnTriggerEnter(Collider other)
+    {
+        if (isActive && other.transform == player)
+        {
+            Debug.Log("[MonsterAI] Player caught!");
+            OnDeath?.Invoke();
+        }
     }
 }

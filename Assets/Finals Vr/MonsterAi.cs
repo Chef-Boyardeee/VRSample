@@ -4,10 +4,11 @@ using System.Collections;
 
 public class MonsterAI : MonoBehaviour
 {
-    // ===== Delegates =====
     public static System.Action OnDeath;
     public static System.Action onRestartGame;
     public static System.Action onStartGame;
+    public static System.Action onPlayerWin;     
+    public static System.Action onPlayerCaught;  
 
     public Transform player;
     public float sightRange = 15f;
@@ -25,6 +26,7 @@ public class MonsterAI : MonoBehaviour
     private bool wasSeeingPlayerLastFrame = false;
     private AIState lastLoggedState;
     private bool isActive = false; // Controls if monster can act
+    private bool canAttackPlayer = true; // Prevents attack after win
 
     private float defaultSpeed;
     private Vector3 spawnPosition;
@@ -35,12 +37,16 @@ public class MonsterAI : MonoBehaviour
     {
         onRestartGame += ResetMonster;
         onStartGame += ResetMonster;
+        onPlayerWin += OnPlayerWin;         
+        onPlayerCaught += OnPlayerCaught;   
     }
 
     private void OnDisable()
     {
         onRestartGame -= ResetMonster;
         onStartGame -= ResetMonster;
+        onPlayerWin -= OnPlayerWin;
+        onPlayerCaught -= OnPlayerCaught;
     }
 
     void Start()
@@ -55,7 +61,7 @@ public class MonsterAI : MonoBehaviour
 
     void Update()
     {
-        if (!isActive) return;
+        if (!isActive || !canAttackPlayer) return;
 
         if (player == null)
         {
@@ -68,13 +74,10 @@ public class MonsterAI : MonoBehaviour
 
         // Logging sight change
         if (canSeePlayer && !wasSeeingPlayerLastFrame)
-        {
             Debug.Log("I see you");
-        }
         else if (!canSeePlayer && wasSeeingPlayerLastFrame)
-        {
             Debug.Log("I don't see you");
-        }
+
         wasSeeingPlayerLastFrame = canSeePlayer;
 
         // State change logging
@@ -98,9 +101,7 @@ public class MonsterAI : MonoBehaviour
                 break;
             case AIState.Teleporting:
                 if (!isTeleporting)
-                {
                     StartCoroutine(TeleportNearPlayer());
-                }
                 break;
         }
     }
@@ -131,9 +132,7 @@ public class MonsterAI : MonoBehaviour
         }
 
         if (agent.remainingDistance < 1f)
-        {
             ChooseNewRoamPoint();
-        }
     }
 
     void HandleChasing(bool canSeePlayer)
@@ -161,9 +160,7 @@ public class MonsterAI : MonoBehaviour
         timeSinceLastSeen += Time.deltaTime;
 
         if (timeSinceLastSeen > loseSightTime)
-        {
             state = AIState.Teleporting;
-        }
     }
 
     IEnumerator TeleportNearPlayer()
@@ -204,7 +201,6 @@ public class MonsterAI : MonoBehaviour
     {
         if (!isActive)
         {
-            // First time activation
             gameObject.SetActive(true);
             isActive = true;
             Debug.Log("[MonsterAI] Activated after first item.");
@@ -224,14 +220,32 @@ public class MonsterAI : MonoBehaviour
         isTeleporting = false;
         wasSeeingPlayerLastFrame = false;
         timeSinceLastSeen = 0f;
+        canAttackPlayer = true;
+        gameObject.SetActive(false); // Hide until reactivated
         Debug.Log("[MonsterAI] Reset to spawn position and default speed.");
+    }
+
+    private void OnPlayerWin()
+    {
+        canAttackPlayer = false;
+        state = AIState.Roaming;
+        agent.ResetPath();
+        Debug.Log("[MonsterAI] Player won — stopping chase.");
+    }
+
+    private void OnPlayerCaught()
+    {
+        canAttackPlayer = false;
+        isActive = false;
+        gameObject.SetActive(false); // Hide monster after catching
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (isActive && other.transform == player)
+        if (isActive && canAttackPlayer && other.transform == player)
         {
             Debug.Log("[MonsterAI] Player caught!");
+            onPlayerCaught?.Invoke(); // Fire caught event
             GameManager.onDeath?.Invoke();
         }
     }

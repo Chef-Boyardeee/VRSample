@@ -198,7 +198,7 @@ public class MonsterAI : MonoBehaviour
         if (isActive && other.transform == player)
         {
             Debug.Log("[MonsterAI] Player caught!");
-            OnDeath?.Invoke();
+            GameManager.onDeath?.Invoke();
         }
     }
 }

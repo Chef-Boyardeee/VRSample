@@ -36,8 +36,7 @@ public class MonsterAI : MonoBehaviour
     private void OnEnable()
     {
         onRestartGame += ResetMonster;
-        onStartGame += ResetMonster;
-        onPlayerWin += OnPlayerWin;         
+        onStartGame += ResetMonster;       
         onPlayerCaught += OnPlayerCaught;   
     }
 
@@ -45,7 +44,6 @@ public class MonsterAI : MonoBehaviour
     {
         onRestartGame -= ResetMonster;
         onStartGame -= ResetMonster;
-        onPlayerWin -= OnPlayerWin;
         onPlayerCaught -= OnPlayerCaught;
     }
 
@@ -225,7 +223,7 @@ public class MonsterAI : MonoBehaviour
         Debug.Log("[MonsterAI] Reset to spawn position and default speed.");
     }
 
-    private void OnPlayerWin()
+    public void onVictory()
     {
         canAttackPlayer = false;
         isActive = false;
@@ -242,7 +240,7 @@ public class MonsterAI : MonoBehaviour
     {
         canAttackPlayer = false;
         isActive = false;
-        gameObject.SetActive(false);
+        gameObject.SetActive(false); 
     }
 
     private void OnTriggerEnter(Collider other)

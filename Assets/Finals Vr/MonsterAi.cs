@@ -7,8 +7,8 @@ public class MonsterAI : MonoBehaviour
     public static System.Action OnDeath;
     public static System.Action onRestartGame;
     public static System.Action onStartGame;
-    public static System.Action onPlayerWin;     
-    public static System.Action onPlayerCaught;  
+    public static System.Action onPlayerWin;
+    public static System.Action onPlayerCaught;
 
     public Transform player;
     public float sightRange = 15f;
@@ -36,8 +36,9 @@ public class MonsterAI : MonoBehaviour
     private void OnEnable()
     {
         onRestartGame += ResetMonster;
-        onStartGame += ResetMonster;       
-        onPlayerCaught += OnPlayerCaught;   
+        onStartGame += ResetMonster;
+        onPlayerCaught += OnPlayerCaught;
+        onPlayerWin += OnVictory; // Subscribe to win event
     }
 
     private void OnDisable()
@@ -45,6 +46,7 @@ public class MonsterAI : MonoBehaviour
         onRestartGame -= ResetMonster;
         onStartGame -= ResetMonster;
         onPlayerCaught -= OnPlayerCaught;
+        onPlayerWin -= OnVictory; // Unsubscribe from win event
     }
 
     void Start()
@@ -223,24 +225,21 @@ public class MonsterAI : MonoBehaviour
         Debug.Log("[MonsterAI] Reset to spawn position and default speed.");
     }
 
-    public void onVictory()
+    private void OnVictory()
     {
         canAttackPlayer = false;
         isActive = false;
         state = AIState.Roaming;
         agent.ResetPath();
-
-        gameObject.SetActive(false);
-
+        gameObject.SetActive(false); // Fully hide monster
         Debug.Log("[MonsterAI] Player won — monster hidden and disabled.");
     }
-
 
     private void OnPlayerCaught()
     {
         canAttackPlayer = false;
         isActive = false;
-        gameObject.SetActive(false); 
+        gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)

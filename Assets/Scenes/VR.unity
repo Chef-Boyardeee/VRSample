@@ -13853,7 +13853,14 @@ MonoBehaviour:
   goalItemSpawns:
   - {fileID: 714062271}
   - {fileID: 50391663}
+  - {fileID: 40841891}
+  - {fileID: 2069201611}
+  - {fileID: 1544136336}
   - {fileID: 525462809}
+  - {fileID: 437068043}
+  - {fileID: 1982260173}
+  - {fileID: 1375871791}
+  - {fileID: 1487646294}
   monster: {fileID: 1621933387}
   waitingArea: {fileID: 36421827}
 --- !u!4 &1140465564

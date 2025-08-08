@@ -40,6 +40,11 @@ public class GameManager : MonoBehaviour
             playerStatic.transform.position = playerSpawnStatic.position;
         };
 
+        onDeath += () =>
+        {
+            playerStatic.transform.position = playerSpawnStatic.position;
+        };
+
         GoalManager.onVictory += () =>
         {
             playerStatic.transform.position = playerSpawnStatic.position;

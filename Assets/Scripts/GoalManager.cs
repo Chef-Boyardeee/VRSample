@@ -138,4 +138,12 @@ public class GoalManager : MonoBehaviour
             }
         }*/
     }
+
+    public void DeactivateGoalItems()
+    {
+        foreach (GoalItemInteractable goalItem in goalItemInteractables)
+        {
+            goalItem.gameObject.SetActive(false);
+        }
+    }
 }

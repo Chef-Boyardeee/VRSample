@@ -10,6 +10,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject player;
     public static GameObject playerStatic;
 
+    [SerializeField] private Material night;
+    [SerializeField] private Material day;
+
     public static GameManager Instance;
 
     public delegate void OnStartGame();
@@ -35,19 +38,27 @@ public class GameManager : MonoBehaviour
         playerSpawnStatic = playerSpawn;
         playerStatic = player;
 
+        onStartGame += () =>
+        {
+            player.transform.position = playerSpawn.position;
+            RenderSettings.skybox = night;
+        };
+
         onRestartGame += () =>
         {
-            playerStatic.transform.position = playerSpawnStatic.position;
+            player.transform.position = playerSpawn.position;
+            RenderSettings.skybox = night;
         };
 
         onDeath += () =>
         {
-            playerStatic.transform.position = playerSpawnStatic.position;
+            RenderSettings.skybox = night;
         };
 
         GoalManager.onVictory += () =>
         {
-            playerStatic.transform.position = playerSpawnStatic.position;
+            player.transform.position = playerSpawn.position;
+            RenderSettings.skybox = day;
         };
         yield return null;
     }

@@ -78,6 +78,7 @@ public class GoalManager : MonoBehaviour
         foreach (GoalPillar goalPillar in goalPillars)
         {
             maxScore++;
+            goalPillar.SetIsUsed(false);
             goalPillar.onAcceptItem += () =>
             {
                 Debug.Log("BASED ITEM!");

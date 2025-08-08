@@ -37,6 +37,7 @@ public class GoalPillar : XRSocketInteractor
         {
             Debug.Log("Accept Item If Check.");
             goodSound.Play();
+            isUsed = true;
         };
 
         onRejectItem += () =>

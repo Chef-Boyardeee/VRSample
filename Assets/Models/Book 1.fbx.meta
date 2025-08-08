@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8cd5846e58217164b8560e2a67cd1f65
+guid: c26759415491d3d40ad7ba8894bec9de
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,8 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Nut
-    second: {fileID: 2100000, guid: d705be2784d39cd48b3f5e7d4277de5c, type: 2}
+      name: Hiwaga
+    second: {fileID: 2100000, guid: e336fef0921cf5f49a6aaaa137e2e2f1, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

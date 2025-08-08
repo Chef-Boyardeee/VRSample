@@ -40,9 +40,9 @@ public class GoalManager : MonoBehaviour
         //Initialize goal item spawns
         foreach(GoalItemInteractable goalItem in goalItemInteractables)
         {
+            goalItem.gameObject.SetActive(true);
             bool goodSpawn = false;
             int i;
-            goalItem.gameObject.SetActive(true);
             if(goalItem.GetItem().isFirstItem)
             {
                 goalItem.transform.position = goalItemSpawns[0].position;

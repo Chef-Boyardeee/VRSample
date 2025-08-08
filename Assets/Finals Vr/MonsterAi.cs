@@ -4,8 +4,10 @@ using System.Collections;
 
 public class MonsterAI : MonoBehaviour
 {
-    // ===== Delegate for death event =====
+    // ===== Delegates =====
     public static System.Action OnDeath;
+    public static System.Action onRestartGame;
+    public static System.Action onStartGame;
 
     public Transform player;
     public float sightRange = 15f;
@@ -24,11 +26,28 @@ public class MonsterAI : MonoBehaviour
     private AIState lastLoggedState;
     private bool isActive = false; // Controls if monster can act
 
+    private float defaultSpeed;
+    private Vector3 spawnPosition;
+
     private enum AIState { Roaming, Chasing, Searching, Teleporting }
+
+    private void OnEnable()
+    {
+        onRestartGame += ResetMonster;
+        onStartGame += ResetMonster;
+    }
+
+    private void OnDisable()
+    {
+        onRestartGame -= ResetMonster;
+        onStartGame -= ResetMonster;
+    }
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        defaultSpeed = agent.speed;
+        spawnPosition = transform.position;
         gameObject.SetActive(false); // Start hidden until first item given
         lastLoggedState = state;
         Debug.Log($"[MonsterAI] Initial State: {state}");
@@ -36,7 +55,7 @@ public class MonsterAI : MonoBehaviour
 
     void Update()
     {
-        if (!isActive) return; // Don't run AI if not active
+        if (!isActive) return;
 
         if (player == null)
         {
@@ -94,8 +113,12 @@ public class MonsterAI : MonoBehaviour
 
         if (Physics.Raycast(origin, direction, out RaycastHit hit, distance))
         {
-            return hit.transform == player;
+            bool seesPlayer = hit.transform == player;
+            Debug.DrawRay(origin, direction * distance, seesPlayer ? Color.red : Color.green);
+            return seesPlayer;
         }
+
+        Debug.DrawRay(origin, direction * distance, Color.green);
         return false;
     }
 
@@ -192,7 +215,18 @@ public class MonsterAI : MonoBehaviour
         Debug.Log("GG");
     }
 
-    // Detect player contact
+    private void ResetMonster()
+    {
+        transform.position = spawnPosition;
+        agent.speed = defaultSpeed;
+        agent.ResetPath();
+        state = AIState.Roaming;
+        isTeleporting = false;
+        wasSeeingPlayerLastFrame = false;
+        timeSinceLastSeen = 0f;
+        Debug.Log("[MonsterAI] Reset to spawn position and default speed.");
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (isActive && other.transform == player)

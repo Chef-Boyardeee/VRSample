@@ -31,7 +31,7 @@ public class UIManager2 : MonoBehaviour
             deathScreen.SetActive(false);
         };
 
-        GameManager.onDeath() += () =>
+        GameManager.onDeath += () =>
         {
             mainMenuScreen.SetActive(false);
             victoryScreen.SetActive(false);

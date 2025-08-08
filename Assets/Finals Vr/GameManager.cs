@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     public static OnQuitGame onQuitGame;
 
     public delegate void OnDeath();
-    public static OnDeath onDeath();
+    public static OnDeath onDeath;
 
     private void Awake()
     {

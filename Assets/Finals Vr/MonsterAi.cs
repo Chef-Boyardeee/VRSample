@@ -228,24 +228,31 @@ public class MonsterAI : MonoBehaviour
     private void OnPlayerWin()
     {
         canAttackPlayer = false;
+        isActive = false;
         state = AIState.Roaming;
         agent.ResetPath();
-        Debug.Log("[MonsterAI] Player won — stopping chase.");
+
+        gameObject.SetActive(false);
+
+        Debug.Log("[MonsterAI] Player won — monster hidden and disabled.");
     }
+
 
     private void OnPlayerCaught()
     {
         canAttackPlayer = false;
         isActive = false;
-        gameObject.SetActive(false); // Hide monster after catching
+        gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (isActive && canAttackPlayer && other.transform == player)
+        if (!isActive || !canAttackPlayer) return;
+
+        if (other.transform == player)
         {
             Debug.Log("[MonsterAI] Player caught!");
-            onPlayerCaught?.Invoke(); // Fire caught event
+            onPlayerCaught?.Invoke();
             GameManager.onDeath?.Invoke();
         }
     }

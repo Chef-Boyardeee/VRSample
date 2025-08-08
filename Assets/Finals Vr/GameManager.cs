@@ -7,6 +7,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform playerSpawn;
     public static Transform playerSpawnStatic;
 
+    [SerializeField] private GameObject player;
+    public static GameObject playerStatic;
+
     public static GameManager Instance;
 
     public delegate void OnStartGame();
@@ -18,6 +21,9 @@ public class GameManager : MonoBehaviour
     public delegate void OnQuitGame();
     public static OnQuitGame onQuitGame;
 
+    public delegate void OnDeath();
+    public static OnDeath onDeath();
+
     private void Awake()
     {
         StartCoroutine("AwakeCoroutine");
@@ -27,6 +33,17 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
         playerSpawnStatic = playerSpawn;
+        playerStatic = player;
+
+        onRestartGame += () =>
+        {
+            playerStatic.transform.position = playerSpawnStatic.position;
+        };
+
+        GoalManager.onVictory += () =>
+        {
+            playerStatic.transform.position = playerSpawnStatic.position;
+        };
         yield return null;
     }
 

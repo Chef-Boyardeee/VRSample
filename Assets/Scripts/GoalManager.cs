@@ -8,6 +8,7 @@ public class GoalManager : MonoBehaviour
     [SerializeField] private GoalPillar[] goalPillars;
     [SerializeField] private Transform[] goalItemSpawns;
     [SerializeField] private MonsterAI monster;
+    [SerializeField] private Transform waitingArea;
 
     public static int maxScore;
     public static int currentScore;
@@ -17,10 +18,12 @@ public class GoalManager : MonoBehaviour
 
     private void Awake()
     {
+        GameManager.onStartGame += ReinitializeGoalItems;
         GameManager.onStartGame += InitializeGoalItems;
         GameManager.onStartGame += InitializeGoalPillars;
         //Add enemy reset to onStartGame
 
+        GameManager.onRestartGame += ReinitializeGoalItems;
         GameManager.onRestartGame += InitializeGoalItems;
         GameManager.onRestartGame += InitializeGoalPillars;
         //Add enemy reset to onRestartGame
@@ -97,5 +100,42 @@ public class GoalManager : MonoBehaviour
                 currentScore--;
             };
         }
+    }
+
+    public void ReinitializeGoalItems()
+    {
+        /*foreach(GoalItemInteractable goalItem in goalItemInteractables)
+        {
+            foreach (GoalPillar goalPillar in goalPillars)
+            {
+                goalPillar.interactionManager.SelectExit(goalPillar, itemSocketed)
+            }
+        }*/
+        Debug.Log("Reinitialize called.");
+        foreach (GoalPillar goalPillar in goalPillars)
+        {
+            goalPillar.gameObject.SetActive(false);
+        }
+
+        foreach(GoalItemInteractable goalItem in goalItemInteractables)
+        {
+            goalItem.gameObject.SetActive(false);
+            goalItem.transform.position = waitingArea.position;
+        }
+
+        foreach (GoalPillar goalPillar in goalPillars)
+        {
+            goalPillar.gameObject.SetActive(true);
+        }
+
+        /*foreach (GoalPillar goalPillar in goalPillars)
+        {
+            if(goalPillar.hasSelection)
+            {
+                GoalItemInteractable item = goalPillar.GetReader().GetItem();
+                goalPillar.interactionManager.SelectExit(goalPillar, item);
+                item.transform.position = waitingArea.position;
+            }
+        }*/
     }
 }

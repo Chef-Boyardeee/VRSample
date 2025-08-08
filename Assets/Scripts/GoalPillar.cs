@@ -6,7 +6,9 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class GoalPillar : XRSocketInteractor
 {
     [SerializeField] private GoalItem requiredItem;
-    [SerializeField] private GameObject snapVolume;
+    [SerializeField] private GoalItemReader reader;
+    [SerializeField] private AudioSource goodSound;
+    [SerializeField] private AudioSource badSound;
 
     private bool isUsed;
 
@@ -30,6 +32,17 @@ public class GoalPillar : XRSocketInteractor
         selectEntered.AddListener(AcceptItem);
         selectEntered.AddListener(RejectItem);
         selectExited.AddListener(RemoveItem);
+
+        onAcceptItem += () =>
+        {
+            Debug.Log("Accept Item If Check.");
+            goodSound.Play();
+        };
+
+        onRejectItem += () =>
+        {
+            Debug.Log("Reject Item If Check.");
+        };
         yield return null;
     }
 
@@ -39,7 +52,6 @@ public class GoalPillar : XRSocketInteractor
         Debug.Log("Accept Item Call.");
         if (onAcceptItem != null && item.GetItem() == requiredItem && !isUsed)
         {
-            Debug.Log("Accept Item If Check.");
             item.OnAcceptItem();
             onAcceptItem();
         }
@@ -51,7 +63,6 @@ public class GoalPillar : XRSocketInteractor
         Debug.Log("Reject Item Call.");
         if(onRejectItem != null && item.GetItem() != requiredItem)
         {
-            Debug.Log("Reject Item If Check.");
             item.OnRejectItem();
             onRejectItem();
         }
@@ -67,6 +78,11 @@ public class GoalPillar : XRSocketInteractor
     public GoalItem GetItem()
     {
         return requiredItem;
+    }
+
+    public GoalItemReader GetReader()
+    {
+        return reader;
     }
 
     public void SetIsUsed(bool b)

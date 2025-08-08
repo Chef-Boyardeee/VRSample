@@ -33,6 +33,19 @@ public class GoalItemInteractable : XRGrabInteractable
 
     }
 
+    public void ResetItem()
+    {
+        StartCoroutine("ResetCoroutine");
+    }
+
+    public IEnumerator ResetCoroutine()
+    {
+        Debug.Log("ResetCoroutine.");
+        GetComponent<Collider>().enabled = false;
+        yield return new WaitForSeconds(0.4f);
+        GetComponent<Collider>().enabled = true;
+    }
+
     public GoalItem GetItem()
     {
         return item;
